@@ -7,6 +7,7 @@
 
 	local suite = test.declare("query")
 
+	local Array = require("array")
 	local Query = require("query")
 
 
@@ -18,7 +19,7 @@
 	local settings
 
 	function suite.setup()
-		settings = {}
+		settings = Array.new()
 	end
 
 
@@ -37,8 +38,8 @@
 -- Fetch a simple value with no filtering and just a single block to consider.
 ---
 
-	function suite.fetchSimpleValue_fromSingleBlock_withNoFiltering()
-		table.insert(settings, { value = "Hello" })
+	function suite.fetchGlobalValue_fromSingleBlock_withNoFiltering()
+		settings:append { value = "Hello" }
 
 		local q = Query.new(settings)
 		test.isequal("Hello", q:fetch("value"))
@@ -49,8 +50,8 @@
 -- Fetch a simple value as a direct field.
 ---
 
-	function suite.fetchSimpleValue_fromSingleBlock_withNoFiltering_asField()
-		table.insert(settings, { value = "Hello" })
+	function suite.fetchGlobalValue_fromSingleBlock_withNoFiltering_asField()
+		settings:append { value = "Hello" }
 
 		local q = Query.new(settings)
 		test.isequal("Hello", q.value)
@@ -61,10 +62,35 @@
 -- Fetch a simple value with no filtering but multiple blocks.
 ---
 
-	function suite.fetchSimpleValue_fromMultipleBlocks_withNoFiltering()
-		table.insert(settings, { value = "Hello" })
-		table.insert(settings, { value = "Greetings" })
+	function suite.fetchGlobalValue_fromMultipleBlocks_withNoFiltering()
+		settings
+			:append { value = "Hello" }
+			:append { value = "Greetings" }
 
 		local q = Query.new(settings)
 		test.isequal("Greetings", q:fetch("value"))
 	end
+
+
+---
+-- Positive match workspace scope against a single block.
+---
+
+	function suite.fetchWorkspaceValue_withNoFiltering()
+		-- create a setting blocks that looks like:
+		-- {
+		-- 	_conditions = { workspaces = "Workspace1" },
+		--  value = "Hello"
+		-- }
+
+		-- then query it
+		-- query { workspaces = "MyWorkspace" }:fetch("value")
+	end
+
+
+-- Inherit value from global scope
+-- Don't inherit value from global scope
+-- Fetch project scoped value with global and workspace inheritance
+-- Fetch project scoped with no inheritance
+-- Fetch configuration scope
+-- Fetch file scope

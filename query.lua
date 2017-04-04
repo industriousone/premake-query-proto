@@ -10,6 +10,8 @@ local m = {}
 
 ---
 -- Construct a new Query object.
+--
+-- Queries are evaluated lazily. They are cheap to create and extend.
 ---
 
 	function m.new(settings)
@@ -21,20 +23,21 @@ local m = {}
 	end
 
 
+
 ---
 -- Fetch a value.
 ---
 
 	function m.fetch(self, key)
-		local value
-
 		local blocks = self._settings
+
 		for i = 1, #blocks do
 			value = blocks[i][key]
 		end
 
 		return value
 	end
+
 
 
 return m
