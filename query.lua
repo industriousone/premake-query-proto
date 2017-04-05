@@ -29,10 +29,12 @@ local m = {}
 ---
 
 	function m.fetch(self, key)
-		local blocks = self._settings
+		local value
 
-		for i = 1, #blocks do
-			value = blocks[i][key]
+		local blocks = self._settings
+		local n = #blocks
+		for i = 1, n do
+			value = blocks[i]:get(key)
 		end
 
 		return value

@@ -7,8 +7,10 @@
 
 	local suite = test.declare("query")
 
-	local Array = require("array")
 	local Query = require("query")
+
+	local Array = require("array")
+	local Settings = require("settings")
 
 
 
@@ -39,10 +41,12 @@
 ---
 
 	function suite.fetchGlobalValue_fromSingleBlock_withNoFiltering()
-		settings:append { value = "Hello" }
+		settings:append(
+			Settings.new():put("kind", "ConsoleApp")
+		)
 
 		local q = Query.new(settings)
-		test.isequal("Hello", q:fetch("value"))
+		test.isequal("ConsoleApp", q:fetch("kind"))
 	end
 
 
@@ -51,10 +55,12 @@
 ---
 
 	function suite.fetchGlobalValue_fromSingleBlock_withNoFiltering_asField()
-		settings:append { value = "Hello" }
+		settings:append(
+			Settings.new():put("kind", "ConsoleApp")
+		)
 
 		local q = Query.new(settings)
-		test.isequal("Hello", q.value)
+		test.isequal("ConsoleApp", q.kind)
 	end
 
 
@@ -63,12 +69,13 @@
 ---
 
 	function suite.fetchGlobalValue_fromMultipleBlocks_withNoFiltering()
-		settings
-			:append { value = "Hello" }
-			:append { value = "Greetings" }
+		settings:append(
+			Settings.new():put("kind", "ConsoleApp"),
+			Settings.new():put("kind", "SharedLib")
+		)
 
 		local q = Query.new(settings)
-		test.isequal("Greetings", q:fetch("value"))
+		test.isequal("SharedLib", q:fetch("kind"))
 	end
 
 
