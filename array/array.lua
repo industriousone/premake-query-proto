@@ -1,6 +1,16 @@
-local m = {}
+---
+-- array/array.lua
+--
+-- Author Jason Perkins
+-- Copyright (c) 2017 Jason Perkins and the Premake project
+---
 
+	local m = {}
+
+
+---
 -- Set up ":" style calling
+---
 
 	local metatable = {
 		__index = function(self, key)
@@ -33,7 +43,6 @@ local m = {}
 		end
 		return self
 	end
-
 
 
 return m

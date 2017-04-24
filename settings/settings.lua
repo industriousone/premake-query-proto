@@ -1,6 +1,18 @@
-local m = {}
+---
+-- settings/settings.lua
+--
+-- Author Jason Perkins
+-- Copyright (c) 2017 Jason Perkins and the Premake project
+---
 
+	local m = {}
+
+	local Conditions = require('conditions')
+
+
+---
 -- Set up ":" style calling
+---
 
 	local metatable = {
 		__index = function(self, key)
@@ -13,14 +25,25 @@ local m = {}
 -- Construct a new Settings object.
 ---
 
-	function m.new()
+	function m.new(conditions)
 		local self = {
-			conditions = {},
+			conditions = Conditions.new(conditions),
 			data = {}
 		}
 		setmetatable(self, metatable)
 		return self
 	end
+
+
+---
+-- Returns true if all of the terms in the provided conditions
+-- are matched by the terms associated with this settings block.
+---
+
+	function m.appliesTo(self, conditions)
+		return (conditions:matches(self.conditions))
+	end
+
 
 
 ---

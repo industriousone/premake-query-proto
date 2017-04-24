@@ -80,20 +80,49 @@
 
 
 ---
--- Positive match workspace scope against a single block.
+-- Check filtering against a single equality condition.
 ---
 
-	function suite.fetchWorkspaceValue_withNoFiltering()
-		-- create a setting blocks that looks like:
-		-- {
-		-- 	_conditions = { workspaces = "Workspace1" },
-		--  value = "Hello"
-		-- }
+	function suite.postiveMatch_simpleValue_singleBlock()
+		settings:append(
+			Settings.new({ workspaces = "Workspace1" })
+				:put("kind", "ConsoleApp")
+		)
 
-		-- then query it
-		-- query { workspaces = "MyWorkspace" }:fetch("value")
+		local q = Query.new(settings)
+			:filter({ workspaces = "Workspace1" })
+
+		test.isequal("ConsoleApp", q:fetch("kind"))
 	end
 
+
+	function suite.negativeMatch_simpleValue_singleBlock()
+		settings:append(
+			Settings.new({ workspaces = "Workspace1" })
+				:put("kind", "ConsoleApp")
+		)
+
+		local q = Query.new(settings)
+			:filter({ workspaces = "Workspace2" })
+
+		test.isnil(q:fetch("kind"))
+	end
+
+
+
+---
+-- Working up to...
+--
+--  project "MyProject"
+--    files { "hello.c", "goodbye.c", "test_hello.c", "test_goodbye.c" }
+--
+--    filter { configurations = "Release" }
+--       removefiles "test_*"
+--
+--  assert(project does not contains "test_hello.c")
+--  assert(configuration "Debug" does contain "test_hello.c")
+--  assert(configuration "Release" does not contain "test_hello.c")
+---
 
 -- Inherit value from global scope
 -- Don't inherit value from global scope
