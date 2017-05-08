@@ -29,9 +29,10 @@
 -- Queries are evaluated lazily. They are cheap to create and extend.
 ---
 
-	function m.new(settings)
+	function m.new(settings, conditions)
 		local self = {
-			_settings = settings
+			_settings = settings,
+			_conditions = conditions
 		}
 		setmetatable(self, metatable)
 		return self
@@ -46,11 +47,13 @@
 	function m.fetch(self, key)
 		local value
 
+		local conditions = rawget(self, "_conditions")
+
 		local blocks = self._settings
 		local n = #blocks
 		for i = 1, n do
 			local block = blocks[i]
-			if self._conditions == nil or block:appliesTo(self._conditions) then
+			if conditions == nil or block:appliesTo(conditions) then
 				value = blocks[i]:get(key)
 			end
 		end
@@ -64,8 +67,8 @@
 ---
 
 	function m.filter(self, conditions)
-		local q = m.new(self._settings)
-		q._conditions = Conditions.new(conditions)
+		local settings = rawget(self, "_settings")
+		local q = m.new(settings, conditions)
 		return q
 	end
 
