@@ -32,7 +32,7 @@
 	function m.new(settings, conditions)
 		local self = {
 			_settings = settings,
-			_conditions = conditions
+			_conditions = Conditions.new(conditions)
 		}
 		setmetatable(self, metatable)
 		return self
@@ -53,7 +53,7 @@
 		local n = #blocks
 		for i = 1, n do
 			local block = blocks[i]
-			if conditions == nil or block:appliesTo(conditions) then
+			if block:appliesTo(conditions) then
 				value = blocks[i]:get(key)
 			end
 		end

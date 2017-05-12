@@ -65,4 +65,13 @@
 	end
 
 
+---
+-- Mark a value for removal.
+---
+
+	function m.remove(self, key, value)
+		return self
+	end
+
+
 return m
