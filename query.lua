@@ -1,5 +1,20 @@
-local m = {}
+---
+-- query/query.lua
+--
+-- Author Jason Perkins
+-- Copyright (c) 2016-2017 Jason Perkins and the Premake project
+---
 
+
+	local m = {}
+
+	local Conditions = require('conditions')
+
+
+---
+-- Set up ":" style calling, and enable values to be fetched as
+-- fields, e.g. `q.kind` instead of `q:fetch("kind")`
+---
 
 	local metatable = {
 		__index = function(self, key)
@@ -14,9 +29,10 @@ local m = {}
 -- Queries are evaluated lazily. They are cheap to create and extend.
 ---
 
-	function m.new(settings)
+	function m.new(settings, conditions)
 		local self = {
-			_settings = settings
+			_settings = settings,
+			_conditions = Conditions.new(conditions)
 		}
 		setmetatable(self, metatable)
 		return self
@@ -31,15 +47,30 @@ local m = {}
 	function m.fetch(self, key)
 		local value
 
+		local conditions = rawget(self, "_conditions")
+
 		local blocks = self._settings
 		local n = #blocks
 		for i = 1, n do
-			value = blocks[i]:get(key)
+			local block = blocks[i]
+			if block:appliesTo(conditions) then
+				value = blocks[i]:get(key)
+			end
 		end
 
 		return value
 	end
 
+
+---
+-- Apply a set of conditions to the query.
+---
+
+	function m.filter(self, conditions)
+		local settings = rawget(self, "_settings")
+		local q = m.new(settings, conditions)
+		return q
+	end
 
 
 return m

@@ -8,7 +8,7 @@
 	local suite = test.declare("settings")
 
 	local Settings = require("settings")
-
+	local Conditions = require("conditions")
 
 
 ---
@@ -17,26 +17,45 @@
 
 	local s
 
-	function suite.setup()
-		s = Settings.new()
-	end
-
 
 
 ---
--- Construct a new, empty array.
+-- Construct a new object.
 ---
 
 	function suite.createNewUnfilteredInstance()
+		s = Settings.new()
+		test.isnotnil(s)
+	end
+
+	function suite.createNew_withConditions()
+		s = Settings.new { workspaces = "Workspace1" }
 		test.isnotnil(s)
 	end
 
 
 ---
 -- Round-trip a simple value.
---
+---
 
 	function suite.canRoundtripSimpleValue()
-		s:put("key", "value")
+		s = Settings.new():put("key", "value")
 		test.isequal("value", s:get("key"))
+	end
+
+
+---
+-- Sanity check the condition testing.
+---
+
+	function suite.appliesTo_passesOnMatch()
+		local cond = Conditions.new({ workspaces = "Workspace1" })
+		s = Settings.new({ workspaces = "Workspace1" })
+		test.istrue(s:appliesTo(cond))
+	end
+
+	function suite.appliesTo_failsOnMismatch()
+		local cond = Conditions.new({ workspaces = "Workspace1" })
+		s = Settings.new({ workspaces = "Workspace2" })
+		test.isfalse(s:appliesTo(cond))
 	end
