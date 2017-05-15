@@ -35,12 +35,18 @@
 
 
 ---
--- Round-trip a simple value.
+-- Round-trip some values.
 ---
 
 	function suite.canRoundtripSimpleValue()
 		s = Settings.new():put("key", "value")
 		test.isequal("value", s:get("key"))
+	end
+
+
+	function suite.canRoundtripListValue()
+		s = Settings.new():put("key", { "value1", "value2" })
+		test.isequal({ "value1", "value2" }, s:get("key"))
 	end
 
 

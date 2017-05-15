@@ -3,6 +3,18 @@
 --
 -- Author Jason Perkins
 -- Copyright (c) 2017 Jason Perkins and the Premake project
+--
+-- Settings represent a "chunk" of key-value configuration pairs, along with a set
+-- of conditions under which those values should be applied. The configuration pairs
+-- are the kinds of things you would set in a project script:
+--
+--  {
+--    ["symbols"] = "On"
+--    ["files"] = { "**.h", "**.cpp" }
+--  }
+--
+-- Settings blocks do not try to interpret any of the values they are given; they
+-- simply store the value pairs and hand them back again on request.
 ---
 
 	local m = {}
@@ -53,6 +65,7 @@
 	function m.get(self, key)
 		return self.data[key]
 	end
+
 
 
 ---
