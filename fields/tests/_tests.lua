@@ -1,3 +1,3 @@
 return {
-	"test_fields.lua",
+	"test_string_fields.lua",
 }
