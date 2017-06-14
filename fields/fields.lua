@@ -49,14 +49,22 @@
 --    A description of the values to be stored in this field, e.g. "string". More
 --    complex types can be described by chaining together these together, e.g.
 --    "list:string" to specify a list of string values.
+-- @param properties
+--    A arbitrary key-value list of properties to be associated with the field.
+--    It can be accessed as `f.properties` once the field is created. This may
+--    contain any arbitrary set of values, but certain keys may have meaning to
+--    specific value types, e.g. "allowed" is recognized by the "string" value
+--    type as the list of values that may be stored in the field.
 -- @return
 --    A populated field object, or nil and an error message if the field could not
 --    be registered successfully.
 ---
 
-	function m.new(name, valueType)
+	function m.new(name, valueType, properties)
 		local self = {
-			_valueType = valueType
+			name = name,
+			properties = properties or {},
+			valueType = valueType
 		}
 		setmetatable(self, metatable)
 		return self
@@ -166,7 +174,7 @@
 			return mutator
 		end
 
-		return mutatorForValueType(self._valueType)
+		return mutatorForValueType(self.valueType)
 	end
 
 

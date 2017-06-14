@@ -127,7 +127,7 @@
 	function suite.valueSetAtProjectOverriddenInConfig_withInheritance()
 		settings:append(
 			Settings.new({ projects = "Project1" })
-				:put("defines", { "A", "B", "C"}),
+				:put("defines", { "A", "B", "C" }),
 			Settings.new({ projects = "Project1", configuration = "Release" })
 				:remove("defines", "B")
 		)

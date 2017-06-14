@@ -17,7 +17,9 @@
 	local f
 
 	function suite.setup()
-		f = Field.new("language", "string")
+		f = Field.new("language", "string", {
+			allowed = { "C", "C++", "C#" }
+		})
 	end
 
 
@@ -27,13 +29,13 @@
 ---
 
 	function suite.merge_onInitialSet()
-		local value = f:merge(nil, "NewValue")
-		test.isequal("NewValue", value)
+		local value = f:merge(nil, "C")
+		test.isequal("C", value)
 	end
 
 	function suite.merge_overwritesOnNextSet()
-		local value = f:merge("Value1", "Value2")
-		test.isequal("Value2", value)
+		local value = f:merge("C", "C++")
+		test.isequal("C++", value)
 	end
 
 
@@ -44,7 +46,7 @@
 
 	function suite.merge_raisesError_onTableValue()
 		local ok, err = pcall(function ()
-			f:merge(nil, { "NewValue" })
+			f:merge(nil, { "C" })
 		end)
 		test.isfalse(ok)
 	end
@@ -55,3 +57,15 @@
 -- Raises an error if value is not in the allowed values list.
 ---
 
+	function suite.merge_raisesError_onValueNotAllowed()
+		local ok, err = pcall(function ()
+			f:merge(nil, "Cobol")
+		end)
+		test.isfalse(ok)
+	end
+
+
+
+---
+-- Warns if a deprecated value is used.
+---
