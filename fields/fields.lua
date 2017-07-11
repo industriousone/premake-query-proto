@@ -20,6 +20,7 @@
 
 
 	m._mutators = {
+		empty = {},
 		merge = {},
 		remove = {}
 	}
@@ -73,6 +74,23 @@
 
 
 ---
+-- Return the appropriate "empty" value for the field. For collections this
+-- would be a table or one of Premake's collection classes. For simple values
+-- it would be a nil.
+---
+
+	function m.emptyValue(self)
+		local mutator = self:mutator("empty")
+		if mutator then
+			return mutator(self)
+		else
+			return nil
+		end
+	end
+
+
+
+---
 -- Merge new and old values together, taking the field's data type description
 -- into account. Simple values will overwrite, collection values will merge.
 --
@@ -92,7 +110,6 @@
 			return newValue
 		end
 	end
-
 
 
 ---
@@ -204,6 +221,7 @@
 -- Register all of the built-in field data types.
 ---
 
+	m.registerValueType("list", dofile("kinds/list.lua"))
 	m.registerValueType("string", dofile("kinds/string.lua"))
 
 

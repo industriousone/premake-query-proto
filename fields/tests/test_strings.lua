@@ -1,11 +1,11 @@
 ---
--- fields/tests/test_string_fields.lua
+-- fields/tests/test_strings.lua
 --
 -- Author Jason Perkins
 -- Copyright (c) 2017 Jason Perkins and the Premake project
 ---
 
-	local suite = test.declare("field_string_fields")
+	local suite = test.declare("field_strings")
 
 	local Field = require("fields")
 
@@ -25,6 +25,16 @@
 
 
 ---
+-- Empty value should be an nil.
+---
+
+	function suite.emptyValue_isNil()
+		local value = f:emptyValue()
+		test.isnil(value)
+	end
+
+
+---
 -- New values overwrite old values.
 ---
 
@@ -38,6 +48,16 @@
 		test.isequal("C++", value)
 	end
 
+
+
+---
+-- Returns the canonical version of allowed values.
+---
+
+	function suite.merge_usesCanonicalVersionOfAllowedValue()
+		local value = f:merge(nil, "c#")
+		test.isequal("C#", value)
+	end
 
 
 ---

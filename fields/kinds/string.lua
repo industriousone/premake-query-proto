@@ -15,8 +15,10 @@
 			error { msg = "expected string; got table" }
 		end
 
+		-- TODO: I think this belongs back in the API module; need to provide a
+		-- way to override/extend the merge call cleanly.
 		if newValue ~= nil and field.properties.allowed ~= nil then
-			local value, err = m._checkAllowedValues(field, newValue)
+			newValue, err = m._checkAllowedValues(field, newValue)
 			if err then
 				error { msg = err }
 			end
@@ -34,7 +36,7 @@
 		local aliases = field.properties.aliases
 
 		if aliases then
-			m._findCaseInsensitiveValueInList(aliases, newValue)
+			canonical = m._findCaseInsensitiveValueInList(aliases, newValue)
 		end
 
 		if not canonical then
@@ -67,18 +69,16 @@
 
 
 
-	function m._findCaseInsensitiveValueInList(list, value)
-		local result
-
-		local loweredValue = value:lower()
+	function m._findCaseInsensitiveValueInList(list, needle)
+		local loweredNeedle = needle:lower()
 
 		for _, value in pairs(list) do
-			if value:lower() == loweredValue then
-				result = value
+			if value:lower() == loweredNeedle then
+				return value
 			end
 		end
 
-		return result
+		return nil
 	end
 
 
