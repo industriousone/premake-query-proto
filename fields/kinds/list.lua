@@ -10,6 +10,21 @@
 	local m = {}
 
 
+	local function removeAll(list, pattern)
+		local n = #list
+
+		for i = n, 1, -1 do
+			local value = list[i]
+			if value == pattern then
+				table.remove(list, i)
+			end
+		end
+
+		return list
+	end
+
+
+
 	function m.empty()
 		return {}
 	end
@@ -25,6 +40,22 @@
 		for i = 1, n do
 			local value = nextMutator(field, nil, newValue[i])
 			table.insert(currentValue, value)
+		end
+
+		return currentValue
+	end
+
+
+
+	function m.remove(field, currentValue, valuesToRemove, nextMutator)
+		currentValue = currentValue or m.empty()
+
+		valuesToRemove = table.flatten({ valuesToRemove })
+
+		local n = #valuesToRemove
+		for i = 1, n do
+			local pattern = valuesToRemove[i]
+			currentValue = removeAll(currentValue, pattern)
 		end
 
 		return currentValue

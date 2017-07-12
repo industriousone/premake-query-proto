@@ -79,3 +79,35 @@
 		local value = f:merge({"DEBUG"}, "DEBUG")
 		test.isequal({"DEBUG", "DEBUG"}, value)
 	end
+
+
+
+---
+-- Test removing values from a list.
+---
+
+	function suite.remove_string()
+		local value = f:remove({ "DEBUG", "_DEBUG" }, "DEBUG")
+		test.isequal({ "_DEBUG" }, value)
+	end
+
+
+
+	function suite.remove_list()
+		local value = f:remove({ "DEBUG", "_DEBUG", "WINDOWS", "_WINDOWS" }, { "_DEBUG", "_WINDOWS" })
+		test.isequal({ "DEBUG", "WINDOWS" }, value)
+	end
+
+
+
+	function suite.remove_nested_list()
+		local value = f:remove({ "DEBUG", "_DEBUG", "WINDOWS", "_WINDOWS" }, { { "_DEBUG" }, { "_WINDOWS" } })
+		test.isequal({ "DEBUG", "WINDOWS" }, value)
+	end
+
+
+
+	function suite.remove_duplicates()
+		local value = f:remove({ "DEBUG", "_DEBUG", "DEBUG", "WINDOWS" }, "DEBUG")
+		test.isequal({ "_DEBUG", "WINDOWS" }, value)
+	end

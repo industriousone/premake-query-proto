@@ -217,6 +217,17 @@
 	end
 
 
+
+
+	function m.remove(self, currentValue, valuesToRemove)
+		local mutator = self:mutator("remove")
+		if mutator then
+			return mutator(self, currentValue, valuesToRemove)
+		end
+	end
+
+
+
 ---
 -- Register all of the built-in field data types.
 ---
