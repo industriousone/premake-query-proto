@@ -19,6 +19,7 @@
 	}
 
 
+
 ---
 -- Construct a new object.
 ---
@@ -32,17 +33,20 @@
 	end
 
 
+
 ---
--- Compare two sets of conditions. All of the terms in this set must
--- be matched by a corresponding term in the other set to pass.
+-- Evaluates this set of conditions against a collection of key-value terms.
+--
+-- @return
+--    True if all of the condition clauses are fully matched by the key-value
+--    pairs in the specified environment.
 ---
 
-	function m.matches(self, conditions)
+	function m.matches(self, environment)
 		local selfTerms = self.terms
-		local otherTerms = conditions.terms
 
 		for key, value in pairs(selfTerms) do
-			if value ~= otherTerms[key] then
+			if value ~= environment[key] then
 				return false
 			end
 		end

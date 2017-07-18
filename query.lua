@@ -8,8 +8,6 @@
 
 	local m = {}
 
-	local Conditions = require('conditions')
-
 
 ---
 -- Set up ":" style calling, and enable values to be fetched as
@@ -27,12 +25,20 @@
 -- Construct a new Query object.
 --
 -- Queries are evaluated lazily. They are cheap to create and extend.
+--
+-- @param settings
+--    The array of Settings objects to be queried.
+-- @param environment
+--    A key-value table representing the current evaluation environment. This
+--    is usually specified via `filter()` instead. May be `nil`.
+-- @return
+--    A new Query object.
 ---
 
-	function m.new(settings, conditions)
+	function m.new(settings, environment)
 		local self = {
-			_settings = settings,
-			_conditions = Conditions.new(conditions)
+			_settings = settings or {},
+			_environment = environment or {}
 		}
 		setmetatable(self, metatable)
 		return self
@@ -47,28 +53,36 @@
 	function m.fetch(self, key)
 		local value
 
-		local conditions = rawget(self, "_conditions")
+		local settings = self._settings
+		local environment = self._environment
 
-		local blocks = self._settings
-		local n = #blocks
+		local n = #settings
 		for i = 1, n do
-			local block = blocks[i]
-			if block:appliesTo(conditions) then
-				value = blocks[i]:get(key)
+			local s = settings[i]
+			if s:appliesTo(environment) then
+				value = s:get(key)
 			end
+
 		end
 
 		return value
 	end
 
 
+
 ---
 -- Apply a set of conditions to the query.
+--
+-- @param environment
+--    A key-value table representing the current evaluation environment, e.g.
+--    `{ workspace="Workspace1", project="Project1", system="Windows"}`.
+-- @return
+--    A new Query object with the additional environment settings.
 ---
 
-	function m.filter(self, conditions)
+	function m.filter(self, environment)
 		local settings = rawget(self, "_settings")
-		local q = m.new(settings, conditions)
+		local q = m.new(settings, environment)
 		return q
 	end
 

@@ -52,8 +52,8 @@
 -- are matched by the terms associated with this settings block.
 ---
 
-	function m.appliesTo(self, conditions)
-		return (conditions:matches(self.conditions))
+	function m.appliesTo(self, environment)
+		return (self.conditions:matches(environment))
 	end
 
 

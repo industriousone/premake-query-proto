@@ -31,41 +31,31 @@
 ---
 
 	function suite.matches_onSingleSimpleValue_match()
-		local a = Conditions.new { workspaces = "Workspace1" }
-		local b = Conditions.new { workspaces = "Workspace1" }
-		test.istrue(a:matches(b))
-		test.istrue(b:matches(a))
+		local c = Conditions.new { workspaces = "Workspace1" }
+		test.istrue(c:matches { workspaces = "Workspace1" })
 	end
 
 	function suite.matches_onSingleSimpleValue_mismatch()
-		local a = Conditions.new { workspaces = "Workspace1" }
-		local b = Conditions.new { workspaces = "Workspace2" }
-		test.isfalse(a:matches(b))
-		test.isfalse(b:matches(a))
+		local c = Conditions.new { workspaces = "Workspace1" }
+		test.isfalse(c:matches { workspaces = "Workspace2" })
 	end
 
 	function suite.matches_onMultipleSimpleValues_match()
-		local a = Conditions.new { workspaces = "Workspace1", project = "Project1" }
-		local b = Conditions.new { workspaces = "Workspace1", project = "Project1" }
-		test.istrue(a:matches(b))
-		test.istrue(b:matches(a))
+		local c = Conditions.new { workspaces = "Workspace1", project = "Project1" }
+		test.istrue(c:matches { workspaces = "Workspace1", project = "Project1" })
 	end
 
 	function suite.matches_onMultipleSimpleValues_matchAndMismatch()
-		local a = Conditions.new { workspaces = "Workspace1", project = "Project1" }
-		local b = Conditions.new { workspaces = "Workspace1", project = "Project2" }
-		test.isfalse(a:matches(b))
-		test.isfalse(b:matches(a))
+		local c = Conditions.new { workspaces = "Workspace1", project = "Project1" }
+		test.isfalse(c:matches { workspaces = "Workspace1", project = "Project2" })
 	end
 
-	function suite.matches_ignoresExtraValuesOnRightSide()
-		local a = Conditions.new { workspaces = "Workspace1" }
-		local b = Conditions.new { workspaces = "Workspace1", project = "Project1" }
-		test.istrue(a:matches(b))
+	function suite.matches_ignoresExtraEnvironmentValues()
+		local c = Conditions.new { workspaces = "Workspace1" }
+		test.istrue(c:matches { workspaces = "Workspace1", project = "Project1" })
 	end
 
 	function suite.matches_failsIfMissingValuesOnRightSide()
-		local a = Conditions.new { workspaces = "Workspace1", project = "Project1" }
-		local b = Conditions.new { workspaces = "Workspace1" }
-		test.isfalse(a:matches(b))
+		local c = Conditions.new { workspaces = "Workspace1", project = "Project1" }
+		test.isfalse(c:matches { workspaces = "Workspace1" })
 	end

@@ -85,12 +85,10 @@
 
 	function suite.postiveMatch_simpleValue_singleBlock()
 		settings:append(
-			Settings.new({ workspaces = "Workspace1" })
-				:put("kind", "ConsoleApp")
+			Settings.new({ workspaces = "Workspace1" }):put("kind", "ConsoleApp")
 		)
 
-		local q = Query.new(settings)
-			:filter({ workspaces = "Workspace1" })
+		local q = Query.new(settings):filter({ workspaces = "Workspace1" })
 
 		test.isequal("ConsoleApp", q:fetch("kind"))
 	end
@@ -98,15 +96,30 @@
 
 	function suite.negativeMatch_simpleValue_singleBlock()
 		settings:append(
-			Settings.new({ workspaces = "Workspace1" })
-				:put("kind", "ConsoleApp")
+			Settings.new({ workspaces = "Workspace1" }):put("kind", "ConsoleApp")
 		)
 
-		local q = Query.new(settings)
-			:filter({ workspaces = "Workspace2" })
+		local q = Query.new(settings):filter({ workspaces = "Workspace2" })
 
 		test.isnil(q:fetch("kind"))
 	end
+
+
+---
+-- Queries should merge list values across settings blocks.
+---
+
+	function suite.doesMergeLists()
+		settings:append(
+			Settings.new({ workspaces = "Workspace1" }):put("defines", { "A", "B" }),
+			Settings.new({ workspaces = "Workspace1" }):put("defines", { "C", "D" })
+		)
+
+		local q = Query.new(settings):filter({ workspaces = "Workspace1" })
+
+		test.isequal({ "A", "B", "C", "D"}, q:fetch("defines"))
+	end
+
 
 
 ---
@@ -128,17 +141,17 @@
 		settings:append(
 			Settings.new({ projects = "Project1" })
 				:put("defines", { "A", "B", "C" }),
-			Settings.new({ projects = "Project1", configuration = "Release" })
+			Settings.new({ projects = "Project1", configurations = "Release" })
 				:remove("defines", "B")
 		)
 
 		local q = Query.new(settings):filter({ projects = "Project1" })
 		test.isequal({ "A", "C" }, q:fetch("defines"))
 
-		q = Query.new(settings):filter({ projects = "Project1", configuration = "Debug" })
+		q = Query.new(settings):filter({ projects = "Project1", configurations = "Debug" })
 		test.isequal({ "A", "B", "C" }, q:fetch("defines"))
 
-		q = Query.new(settings):filter({ projects = "Project1", configuration = "Release" })
+		q = Query.new(settings):filter({ projects = "Project1", configurations = "Release" })
 		test.isequal({ "A", "C" }, q:fetch("defines"))
 	end
 
@@ -147,16 +160,16 @@
 		settings:append(
 			Settings.new({ projects = "Project1" })
 				:put("defines", { "A", "B", "C"}),
-			Settings.new({ projects = "Project1", configuration = "Release" })
+			Settings.new({ projects = "Project1", configurations = "Release" })
 				:remove("defines", "B")
 		)
 
 		local q = Query.new(settings):filter({ projects = "Project1" })
 		test.isequal({ "A", "C" }, q:fetch("defines"))
 
-		q = Query.new(settings):filter({ projects = "Project1", configuration = "Debug" })
+		q = Query.new(settings):filter({ projects = "Project1", configurations = "Debug" })
 		test.isequal({ "B" }, q:fetchLocal("defines"))
 
-		q = Query.new(settings):filter({ projects = "Project1", configuration = "Release" })
+		q = Query.new(settings):filter({ projects = "Project1", configurations = "Release" })
 		test.isequal({ }, q:fetchLocal("defines"))
 	end
